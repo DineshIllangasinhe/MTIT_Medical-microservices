@@ -1,0 +1,24 @@
+{
+  "name": "medical-microservices",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Online medical appointment backend — npm workspaces; one install at repo root",
+  "workspaces": [
+    "user-service",
+    "doctor-service",
+    "appointment-service",
+    "payment-service",
+    "api-gateway"
+  ],
+  "scripts": {
+    "start": "concurrently -k -n US,DS,AS,PS,GW -c cyan,magenta,yellow,green,blue \"npm run start -w user-service\" \"npm run start -w doctor-service\" \"npm run start -w appointment-service\" \"npm run start -w payment-service\" \"npm run start -w api-gateway\"",
+    "start:services-only": "concurrently -n US,DS,AS,PS -c cyan,magenta,yellow,green \"npm run start -w user-service\" \"npm run start -w doctor-service\" \"npm run start -w appointment-service\" \"npm run start -w payment-service\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "engines": {
+    "node": ">=18",
+    "npm": ">=7"
+  }
+}
