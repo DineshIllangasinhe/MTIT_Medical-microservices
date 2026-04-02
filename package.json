@@ -11,8 +11,9 @@
     "api-gateway"
   ],
   "scripts": {
-    "start": "concurrently -k -n US,DS,AS,PS,GW -c cyan,magenta,yellow,green,blue \"npm run start -w user-service\" \"npm run start -w doctor-service\" \"npm run start -w appointment-service\" \"npm run start -w payment-service\" \"npm run start -w api-gateway\"",
-    "start:services-only": "concurrently -n US,DS,AS,PS -c cyan,magenta,yellow,green \"npm run start -w user-service\" \"npm run start -w doctor-service\" \"npm run start -w appointment-service\" \"npm run start -w payment-service\""
+    "start": "node scripts/free-dev-ports.js && concurrently -k -n US,DS,AS,PS,GW -c cyan,magenta,yellow,green,blue \"npm run start -w user-service\" \"npm run start -w doctor-service\" \"npm run start -w appointment-service\" \"npm run start -w payment-service\" \"npm run start -w api-gateway\"",
+    "start:no-free": "concurrently -k -n US,DS,AS,PS,GW -c cyan,magenta,yellow,green,blue \"npm run start -w user-service\" \"npm run start -w doctor-service\" \"npm run start -w appointment-service\" \"npm run start -w payment-service\" \"npm run start -w api-gateway\"",
+    "start:services-only": "node scripts/free-dev-ports.js && concurrently -n US,DS,AS,PS -c cyan,magenta,yellow,green \"npm run start -w user-service\" \"npm run start -w doctor-service\" \"npm run start -w appointment-service\" \"npm run start -w payment-service\""
   },
   "devDependencies": {
     "concurrently": "^9.1.2"
