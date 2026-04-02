@@ -3,7 +3,7 @@
  * Port: 3003
  *
  * Endpoints (CRUD):
- *   POST   /appointments
+ *   POST   /appointment | POST /appointments
  *   GET    /appointments | GET /appointments/:id
  *   PATCH  /appointments/:id | PUT /appointments/:id | DELETE /appointments/:id
  *   GET    /api-docs

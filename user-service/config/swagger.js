@@ -2,6 +2,7 @@
  * OpenAPI / Swagger configuration for User Service.
  * Served at GET /api-docs via swagger-ui-express in server.js.
  */
+const path = require('path');
 const swaggerJsdoc = require('swagger-jsdoc');
 
 const PORT = process.env.PORT || 3001;
@@ -26,8 +27,10 @@ const options = {
       },
     },
   },
-  // JSDoc comments with @openapi live next to route handlers
-  apis: ['./routes/*.js', './server.js'],
+  apis: [
+    path.join(__dirname, '../routes/*.js'),
+    path.join(__dirname, '../server.js'),
+  ],
 };
 
 module.exports = swaggerJsdoc(options);

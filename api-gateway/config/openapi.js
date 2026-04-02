@@ -271,6 +271,30 @@ const spec = {
         responses: { 200: { description: 'OK' }, 404: { description: 'Not found' } },
       },
     },
+    '/appointments/appointment': {
+      post: {
+        tags: ['Appointments'],
+        summary: 'Book appointment (same as POST /appointments/appointments)',
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['userId', 'doctorId', 'scheduledAt'],
+                properties: {
+                  userId: { type: 'integer' },
+                  doctorId: { type: 'integer' },
+                  scheduledAt: { type: 'string', format: 'date-time' },
+                  reason: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+        responses: { 201: { description: 'Created' }, 400: { description: 'Bad request' } },
+      },
+    },
     '/appointments/appointments': {
       post: {
         tags: ['Appointments'],
@@ -292,7 +316,7 @@ const spec = {
             },
           },
         },
-        responses: { 201: { description: 'Created' } },
+        responses: { 201: { description: 'Created' }, 400: { description: 'Bad request' } },
       },
       get: {
         tags: ['Appointments'],

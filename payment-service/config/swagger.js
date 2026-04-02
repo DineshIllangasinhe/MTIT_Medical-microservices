@@ -1,6 +1,7 @@
 /**
  * OpenAPI / Swagger configuration for Payment Service.
  */
+const path = require('path');
 const swaggerJsdoc = require('swagger-jsdoc');
 
 const PORT = process.env.PORT || 3004;
@@ -15,7 +16,10 @@ const options = {
     },
     servers: [{ url: `http://localhost:${PORT}`, description: 'Payment service (direct)' }],
   },
-  apis: ['./routes/*.js', './server.js'],
+  apis: [
+    path.join(__dirname, '../routes/*.js'),
+    path.join(__dirname, '../server.js'),
+  ],
 };
 
 module.exports = swaggerJsdoc(options);

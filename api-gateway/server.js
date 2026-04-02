@@ -54,7 +54,8 @@ app.get('/', (_req, res) => {
     usage: {
       users: 'CRUD: POST /users/register, login, GET /users/profile (JWT), GET /users/users, GET|PATCH|PUT|DELETE /users/users/:id (JWT for patch/put/delete own)',
       doctors: 'CRUD: POST /doctors/doctor or /doctors/doctors, GET /doctors/doctors, GET|PATCH|PUT|DELETE /doctors/doctors/:id',
-      appointments: 'CRUD: POST/GET /appointments/appointments, GET|PATCH|PUT|DELETE /appointments/appointments/:id',
+      appointments:
+        'CRUD: POST /appointments/appointment or /appointments/appointments, GET /appointments/appointments, GET|PATCH|PUT|DELETE /appointments/appointments/:id',
       payments: 'CRUD: POST /payments/pay or /payments/payments, GET /payments/payments, GET|PATCH|PUT|DELETE /payments/payments/:id',
     },
     swaggerPerService: 'Each microservice also exposes /api-docs on ports 3001–3004.',
