@@ -72,6 +72,20 @@ router.post('/register', async (req, res) => {
  *   post:
  *     summary: Login (read token)
  *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [email, password]
+ *             properties:
+ *               email: { type: string }
+ *               password: { type: string }
+ *     responses:
+ *       200: { description: OK, returns token and user }
+ *       400: { description: Missing fields }
+ *       401: { description: Invalid credentials }
  */
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
@@ -95,9 +109,13 @@ router.post('/login', async (req, res) => {
  * /profile:
  *   get:
  *     summary: Current user (JWT required)
- *     description: Send Authorization Bearer token from POST /login. Without it, returns 401.
+ *     description: Use **Authorize** and paste the JWT from POST /login (token value only, no Bearer prefix if your UI adds it).
  *     tags: [Users]
  *     security: [ { bearerAuth: [] } ]
+ *     responses:
+ *       200: { description: OK }
+ *       401: { description: Missing or invalid token }
+ *       404: { description: User not found }
  */
 router.get('/profile', authMiddleware, (req, res) => {
   const user = findById(Number(req.user.sub));
@@ -111,6 +129,8 @@ router.get('/profile', authMiddleware, (req, res) => {
  *   get:
  *     summary: List all users (demo)
  *     tags: [Users]
+ *     responses:
+ *       200: { description: OK }
  */
 router.get('/users', (_req, res) => {
   res.json(users.map((u) => toPublicUser(u)));
@@ -122,6 +142,14 @@ router.get('/users', (_req, res) => {
  *   get:
  *     summary: Get user by id
  *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     responses:
+ *       200: { description: OK }
+ *       404: { description: Not found }
  */
 router.get('/users/:id', (req, res) => {
   const user = findById(req.params.id);
@@ -136,6 +164,25 @@ router.get('/users/:id', (req, res) => {
  *     summary: Update user (JWT must match id — demo ownership)
  *     tags: [Users]
  *     security: [ { bearerAuth: [] } ]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               fullName: { type: string }
+ *               email: { type: string }
+ *     responses:
+ *       200: { description: OK }
+ *       400: { description: No fields or invalid fullName }
+ *       403: { description: JWT does not match id }
+ *       404: { description: Not found }
+ *       409: { description: Email already in use }
  */
 router.patch('/users/:id', authMiddleware, async (req, res) => {
   const id = Number(req.params.id);
@@ -175,6 +222,27 @@ router.patch('/users/:id', authMiddleware, async (req, res) => {
  *     summary: Replace user fields (JWT must match id)
  *     tags: [Users]
  *     security: [ { bearerAuth: [] } ]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [fullName, email]
+ *             properties:
+ *               fullName: { type: string }
+ *               email: { type: string }
+ *     responses:
+ *       200: { description: OK }
+ *       400: { description: Validation error }
+ *       403: { description: JWT does not match id }
+ *       404: { description: Not found }
+ *       409: { description: Email already in use }
  */
 router.put('/users/:id', authMiddleware, async (req, res) => {
   const id = Number(req.params.id);
@@ -210,6 +278,15 @@ router.put('/users/:id', authMiddleware, async (req, res) => {
  *     summary: Delete user (JWT must match id)
  *     tags: [Users]
  *     security: [ { bearerAuth: [] } ]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     responses:
+ *       200: { description: OK }
+ *       403: { description: JWT does not match id }
+ *       404: { description: Not found }
  */
 router.delete('/users/:id', authMiddleware, (req, res) => {
   const id = Number(req.params.id);
