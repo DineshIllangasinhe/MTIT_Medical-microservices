@@ -1,6 +1,7 @@
 /**
  * OpenAPI / Swagger configuration for Doctor Service.
  */
+const path = require('path');
 const swaggerJsdoc = require('swagger-jsdoc');
 
 const PORT = process.env.PORT || 3002;
@@ -15,7 +16,10 @@ const options = {
     },
     servers: [{ url: `http://localhost:${PORT}`, description: 'Doctor service (direct)' }],
   },
-  apis: ['./routes/*.js', './server.js'],
+  apis: [
+    path.join(__dirname, '../routes/*.js'),
+    path.join(__dirname, '../server.js'),
+  ],
 };
 
 module.exports = swaggerJsdoc(options);

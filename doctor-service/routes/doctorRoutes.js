@@ -24,6 +24,20 @@ let idSeq = doctors.length + 1;
  *   post:
  *     summary: Create doctor
  *     tags: [Doctors]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [fullName, specialty]
+ *             properties:
+ *               fullName: { type: string }
+ *               specialty: { type: string }
+ *               licenseNo: { type: string, nullable: true }
+ *     responses:
+ *       201: { description: Created }
+ *       400: { description: Validation error }
  */
 function createDoctor(req, res) {
   const { fullName, specialty, licenseNo } = req.body;
@@ -46,6 +60,20 @@ router.post('/doctor', createDoctor);
  *   post:
  *     summary: Create doctor (same as POST /doctor)
  *     tags: [Doctors]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [fullName, specialty]
+ *             properties:
+ *               fullName: { type: string }
+ *               specialty: { type: string }
+ *               licenseNo: { type: string, nullable: true }
+ *     responses:
+ *       201: { description: Created }
+ *       400: { description: Validation error }
  */
 router.post('/doctors', createDoctor);
 
@@ -55,6 +83,8 @@ router.post('/doctors', createDoctor);
  *   get:
  *     summary: List doctors
  *     tags: [Doctors]
+ *     responses:
+ *       200: { description: OK }
  */
 router.get('/doctors', (_req, res) => {
   res.json(doctors);
@@ -66,6 +96,14 @@ router.get('/doctors', (_req, res) => {
  *   get:
  *     summary: Get doctor by id
  *     tags: [Doctors]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     responses:
+ *       200: { description: OK }
+ *       404: { description: Not found }
  */
 router.get('/doctors/:id', (req, res) => {
   const id = Number(req.params.id);
@@ -80,6 +118,24 @@ router.get('/doctors/:id', (req, res) => {
  *   patch:
  *     summary: Update doctor
  *     tags: [Doctors]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               fullName: { type: string }
+ *               specialty: { type: string }
+ *               licenseNo: { type: string, nullable: true }
+ *     responses:
+ *       200: { description: OK }
+ *       400: { description: No fields to update }
+ *       404: { description: Not found }
  */
 router.patch('/doctors/:id', (req, res) => {
   const id = Number(req.params.id);
@@ -101,6 +157,26 @@ router.patch('/doctors/:id', (req, res) => {
  *   put:
  *     summary: Replace doctor (full body)
  *     tags: [Doctors]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [fullName, specialty]
+ *             properties:
+ *               fullName: { type: string }
+ *               specialty: { type: string }
+ *               licenseNo: { type: string, nullable: true }
+ *     responses:
+ *       200: { description: OK }
+ *       400: { description: Validation error }
+ *       404: { description: Not found }
  */
 router.put('/doctors/:id', (req, res) => {
   const id = Number(req.params.id);
@@ -122,6 +198,14 @@ router.put('/doctors/:id', (req, res) => {
  *   delete:
  *     summary: Delete doctor
  *     tags: [Doctors]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     responses:
+ *       200: { description: OK }
+ *       404: { description: Not found }
  */
 router.delete('/doctors/:id', (req, res) => {
   const id = Number(req.params.id);

@@ -11,6 +11,21 @@ let idSeq = 1;
  *   post:
  *     summary: Create payment record
  *     tags: [Payments]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [appointmentId, amount, currency]
+ *             properties:
+ *               appointmentId: { type: integer }
+ *               amount: { type: number }
+ *               currency: { type: string, example: USD }
+ *               method: { type: string, default: card }
+ *     responses:
+ *       201: { description: Created }
+ *       400: { description: Validation error }
  */
 function createPayment(req, res) {
   const { appointmentId, amount, currency, method } = req.body;
@@ -38,6 +53,21 @@ router.post('/pay', createPayment);
  *   post:
  *     summary: Create payment (same as POST /pay)
  *     tags: [Payments]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [appointmentId, amount, currency]
+ *             properties:
+ *               appointmentId: { type: integer }
+ *               amount: { type: number }
+ *               currency: { type: string, example: USD }
+ *               method: { type: string, default: card }
+ *     responses:
+ *       201: { description: Created }
+ *       400: { description: Validation error }
  */
 router.post('/payments', createPayment);
 
@@ -47,6 +77,13 @@ router.post('/payments', createPayment);
  *   get:
  *     summary: List payments
  *     tags: [Payments]
+ *     parameters:
+ *       - in: query
+ *         name: appointmentId
+ *         schema: { type: integer }
+ *         description: Filter by appointment id
+ *     responses:
+ *       200: { description: OK }
  */
 router.get('/payments', (req, res) => {
   const { appointmentId } = req.query;
@@ -63,6 +100,14 @@ router.get('/payments', (req, res) => {
  *   get:
  *     summary: Get payment by id
  *     tags: [Payments]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     responses:
+ *       200: { description: OK }
+ *       404: { description: Not found }
  */
 router.get('/payments/:id', (req, res) => {
   const id = Number(req.params.id);
@@ -77,6 +122,25 @@ router.get('/payments/:id', (req, res) => {
  *   patch:
  *     summary: Update payment (status, amount, method — demo)
  *     tags: [Payments]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               amount: { type: number }
+ *               currency: { type: string }
+ *               method: { type: string }
+ *               status: { type: string }
+ *     responses:
+ *       200: { description: OK }
+ *       400: { description: No fields to update }
+ *       404: { description: Not found }
  */
 router.patch('/payments/:id', (req, res) => {
   const id = Number(req.params.id);
@@ -100,6 +164,28 @@ router.patch('/payments/:id', (req, res) => {
  *   put:
  *     summary: Replace payment record
  *     tags: [Payments]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [appointmentId, amount, currency]
+ *             properties:
+ *               appointmentId: { type: integer }
+ *               amount: { type: number }
+ *               currency: { type: string }
+ *               method: { type: string }
+ *               status: { type: string }
+ *     responses:
+ *       200: { description: OK }
+ *       400: { description: Validation error }
+ *       404: { description: Not found }
  */
 router.put('/payments/:id', (req, res) => {
   const id = Number(req.params.id);
@@ -124,6 +210,14 @@ router.put('/payments/:id', (req, res) => {
  *   delete:
  *     summary: Delete payment
  *     tags: [Payments]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     responses:
+ *       200: { description: OK }
+ *       404: { description: Not found }
  */
 router.delete('/payments/:id', (req, res) => {
   const id = Number(req.params.id);

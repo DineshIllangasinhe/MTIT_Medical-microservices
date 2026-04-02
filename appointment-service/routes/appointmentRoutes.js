@@ -7,12 +7,27 @@ let idSeq = 1;
 
 /**
  * @openapi
- * /appointments:
+ * /appointment:
  *   post:
- *     summary: Create appointment
+ *     summary: Create appointment (same as POST /appointments)
  *     tags: [Appointments]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [userId, doctorId, scheduledAt]
+ *             properties:
+ *               userId: { type: integer }
+ *               doctorId: { type: integer }
+ *               scheduledAt: { type: string, description: ISO datetime }
+ *               reason: { type: string, nullable: true }
+ *     responses:
+ *       201: { description: Created }
+ *       400: { description: Validation error }
  */
-router.post('/appointments', (req, res) => {
+function createAppointment(req, res) {
   const { userId, doctorId, scheduledAt, reason } = req.body;
   if (userId == null || doctorId == null || !scheduledAt) {
     return res.status(400).json({ error: 'userId, doctorId, and scheduledAt are required' });
@@ -28,7 +43,33 @@ router.post('/appointments', (req, res) => {
   };
   appointments.push(appt);
   return res.status(201).json(appt);
-});
+}
+
+router.post('/appointment', createAppointment);
+
+/**
+ * @openapi
+ * /appointments:
+ *   post:
+ *     summary: Create appointment
+ *     tags: [Appointments]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [userId, doctorId, scheduledAt]
+ *             properties:
+ *               userId: { type: integer }
+ *               doctorId: { type: integer }
+ *               scheduledAt: { type: string, description: ISO datetime }
+ *               reason: { type: string, nullable: true }
+ *     responses:
+ *       201: { description: Created }
+ *       400: { description: Validation error }
+ */
+router.post('/appointments', createAppointment);
 
 /**
  * @openapi
@@ -36,6 +77,17 @@ router.post('/appointments', (req, res) => {
  *   get:
  *     summary: List appointments
  *     tags: [Appointments]
+ *     parameters:
+ *       - in: query
+ *         name: userId
+ *         schema: { type: integer }
+ *         description: Filter by user id
+ *       - in: query
+ *         name: doctorId
+ *         schema: { type: integer }
+ *         description: Filter by doctor id
+ *     responses:
+ *       200: { description: OK }
  */
 router.get('/appointments', (req, res) => {
   const { userId, doctorId } = req.query;
@@ -51,6 +103,14 @@ router.get('/appointments', (req, res) => {
  *   get:
  *     summary: Get appointment by id
  *     tags: [Appointments]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     responses:
+ *       200: { description: OK }
+ *       404: { description: Not found }
  */
 router.get('/appointments/:id', (req, res) => {
   const id = Number(req.params.id);
@@ -65,6 +125,26 @@ router.get('/appointments/:id', (req, res) => {
  *   patch:
  *     summary: Update appointment (reschedule, reason, status)
  *     tags: [Appointments]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               userId: { type: integer }
+ *               doctorId: { type: integer }
+ *               scheduledAt: { type: string }
+ *               reason: { type: string, nullable: true }
+ *               status: { type: string }
+ *     responses:
+ *       200: { description: OK }
+ *       400: { description: No fields to update }
+ *       404: { description: Not found }
  */
 router.patch('/appointments/:id', (req, res) => {
   const id = Number(req.params.id);
@@ -95,6 +175,28 @@ router.patch('/appointments/:id', (req, res) => {
  *   put:
  *     summary: Replace appointment
  *     tags: [Appointments]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [userId, doctorId, scheduledAt]
+ *             properties:
+ *               userId: { type: integer }
+ *               doctorId: { type: integer }
+ *               scheduledAt: { type: string }
+ *               reason: { type: string, nullable: true }
+ *               status: { type: string }
+ *     responses:
+ *       200: { description: OK }
+ *       400: { description: Validation error }
+ *       404: { description: Not found }
  */
 router.put('/appointments/:id', (req, res) => {
   const id = Number(req.params.id);
@@ -119,6 +221,14 @@ router.put('/appointments/:id', (req, res) => {
  *   delete:
  *     summary: Delete appointment
  *     tags: [Appointments]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     responses:
+ *       200: { description: OK }
+ *       404: { description: Not found }
  */
 router.delete('/appointments/:id', (req, res) => {
   const id = Number(req.params.id);
