@@ -42,7 +42,10 @@ function createAppointment(req, res) {
     createdAt: new Date().toISOString(),
   };
   appointments.push(appt);
-  return res.status(201).json(appt);
+  return res.status(201).json({
+  message: 'Appointment registered successfully',
+  appointment: appt
+});
 }
 
 router.post('/appointment', createAppointment);
@@ -166,7 +169,10 @@ router.patch('/appointments/:id', (req, res) => {
   if (reason !== undefined) appt.reason = reason;
   if (status !== undefined) appt.status = String(status);
   appt.updatedAt = new Date().toISOString();
-  return res.json(appt);
+  return res.json({
+  message: 'Appointment updated successfully',
+  appointment: appt
+});
 });
 
 /**
@@ -212,7 +218,10 @@ router.put('/appointments/:id', (req, res) => {
   appt.reason = reason ?? null;
   appt.status = status != null ? String(status) : 'scheduled';
   appt.updatedAt = new Date().toISOString();
-  return res.json(appt);
+  return res.json({
+  message: 'Appointment replaced successfully',
+  appointment: appt
+});
 });
 
 /**
